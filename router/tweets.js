@@ -17,7 +17,7 @@ const validateTweet = [
 router.get('/', isAuth, tweetController.getTweets);
 
 // GET /tweets/:id
-router.get('/:id', isAuth, param('id').trim().isInt().withMessage('유효한 아이디가 아닙니다'), validate, tweetController.getTweet)
+router.get('/:id', isAuth, validate, tweetController.getTweet)
 
 // POST /tweets
 router.post(
@@ -34,6 +34,6 @@ router.put(
     tweetController.updateTweet);
 
 // DELETE /tweets/:id
-router.delete('/:id', isAuth, param('id').trim().isInt().withMessage('유효한 아이디가 아닙니다'), validate, tweetController.deletTweet);
+router.delete('/:id', isAuth, validate, tweetController.deletTweet);
 
 export default router;
