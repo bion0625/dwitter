@@ -38,6 +38,7 @@ app.use((error, req, res, next) => {
 });
 
 connectDB().then(() => {
+    console.log(`Server started at ${new Date()}`)
     const server = app.listen(config.port);
     initSocket(server);
 }).catch(console.error);
