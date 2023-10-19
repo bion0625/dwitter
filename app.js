@@ -38,6 +38,6 @@ app.use((error, req, res, next) => {
 });
 
 connectDB().then(() => {
-    const server = app.listen(config.host.port);
+    const server = app.listen(config.port);
     initSocket(server);
 }).catch(console.error);
