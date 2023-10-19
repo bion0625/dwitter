@@ -1,21 +1,43 @@
-import { db } from "../db/database.js";
+import SQ from 'sequelize';
+import { sequelize } from "../db/database.js";
+const DataTypes = SQ.DataTypes;
+
+export const User = sequelize.define('user', {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            allowNull: false,
+            primaryKey: true,
+        },
+        username: {
+            type: DataTypes.STRING(45),
+            allowNull: false,
+        },
+        password: {
+            type: DataTypes.STRING(128),
+            allowNull: false
+        },
+        name: {
+            type: DataTypes.STRING(128),
+            allowNull: false,
+        },
+        email: {
+            type: DataTypes.STRING(128),
+            allowNull: false,
+        },
+        url: DataTypes.TEXT,
+    }, 
+    { timestamps: false }
+);
 
 export const findById = async (id) => {
-    return db.execute(`select id, username, password, name, email, url from users u where u.id = ?`, [id])
-    .then(result => result[0][0]);
+    return User.findByPk(id);
 };
 
 export const createUser = async (user) => {
-    const {username, password, name, email, url} = user;
-    return db
-    .execute(`insert into users (username, password, name, email, url) values (?,?,?,?,?)`, [
-        username, password, name, email, url
-    ])
-    .then(result => result[0].insertId);
+    return User.create(user).then(data => {console.log(data); return data.dataValues.id});
 };
 
 export const findByUsername = async (username) => {
-    return db
-    .execute(`select id, username, password, name, email, url from users u where u.username = ?`, [username])
-    .then(result => result[0][0]);
+    return User.findOne({where: {username}});
 };
