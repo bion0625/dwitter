@@ -12,7 +12,7 @@ export const isAuth = async (req, res, next) => {
     //check the header first
 
     const authHeader = req.get('Authorization');
-    if(!(authHeader && authHeader.startsWith('Bearer '))){
+    if(authHeader && authHeader.startsWith('Bearer ')){
         token = authHeader.split(' ')[1];
     }
 
