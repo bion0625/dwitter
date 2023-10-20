@@ -3,7 +3,19 @@ import bcrypt from 'bcrypt';
 import * as userRepository from "../data/auth.js";
 import { config } from '../config.js';
 
-const createJwtToken =id => jwt.sign({id}, config.jwt.secretKey, {expiresIn: config.jwt.expiresInSec});
+const createJwtToken =id => jwt.sign({id}, config.jwt.secretKey, {
+    expiresIn: config.jwt.expiresInSec,
+});
+
+const setToken = (res, token) => {
+    const options = {
+        maxAge: config.jwt.expiresInSec * 1000,
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+    }
+    res.cookie('token', token, options)// HTTP-ONLY
+}
 
 export const signup = async (req, res) => {
     const { username, password, name, email, url} = req.body;
@@ -19,7 +31,8 @@ export const signup = async (req, res) => {
         email, 
         url,
     });
-    const token = createJwtToken(userId);
+    const token = createJwtToken(userId); //cookie header
+    setToken(res, token);
     res.status(201).json({token, username});
 }
 
@@ -37,6 +50,7 @@ export const login = async (req, res) => {
         return res.status(401).json({message:"Invalid user or password"});
     }
     const token = createJwtToken(user.id);
+    setToken(res, token);
     res.status(200).json({token, username});
 };
 
