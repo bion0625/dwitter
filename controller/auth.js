@@ -17,6 +17,10 @@ const setToken = (res, token) => {
     res.cookie('token', token, options)// HTTP-ONLY
 }
 
+const generateCSRFToken = () => {
+    return bcrypt.hash(config.csrf.plainToken, 1)
+};
+
 export const signup = async (req, res) => {
     const { username, password, name, email, url} = req.body;
     const found = await userRepository.findByUsername(username);
@@ -65,4 +69,9 @@ export const me = async (req, res) => {
         return res.status(404).json({ message: 'User not found' });
     }
     res.status(200).json({ token: req.token, username: user.username });
+};
+
+export const csrfToken = async (req, res) => {
+    const csrfToken = await generateCSRFToken();
+    res.status(200).json({csrfToken});
 };

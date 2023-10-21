@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import { config } from './config.js';
 import { initSocket } from './connection/socket.js';
 import { connectDB } from './db/database.js';
+import { csrfCheck } from './middleware/csrf.js';
 
 const app = express();
 
@@ -16,9 +17,11 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(morgan('tiny'));
 
+app.use(csrfCheck);
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', config.cors.allowedOrigin);
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization, _csrf-token');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST , PUT, DELETE');
     next();
