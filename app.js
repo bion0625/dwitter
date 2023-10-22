@@ -9,6 +9,7 @@ import { config } from './config.js';
 import { initSocket } from './connection/socket.js';
 import { connectDB } from './db/database.js';
 import { csrfCheck } from './middleware/csrf.js';
+import { limit } from './middleware/rate-limiter.js';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
 app.use(morgan('tiny'));
+app.use(limit);
 
 app.use(csrfCheck);
 
