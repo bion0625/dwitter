@@ -10,9 +10,12 @@ import { initSocket } from './connection/socket.js';
 import { connectDB } from './db/database.js';
 import { csrfCheck } from './middleware/csrf.js';
 import { limit } from './middleware/rate-limiter.js';
+import yaml from 'yamljs';
+import swaggerUI from 'swagger-ui-express';
 
 const app = express();
 
+const openAPIDocument = yaml.load('./api/openapi.yaml');
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
@@ -20,6 +23,7 @@ app.use(morgan('tiny'));
 app.use(limit);
 
 app.use(csrfCheck);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openAPIDocument));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', config.cors.allowedOrigin);
